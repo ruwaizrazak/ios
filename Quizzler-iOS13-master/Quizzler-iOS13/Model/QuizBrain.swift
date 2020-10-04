@@ -1,21 +1,14 @@
 //
-//  ViewController.swift
+//  QuizBrain.swift
 //  Quizzler-iOS13
 //
-//  Created by Angela Yu on 12/07/2019.
-//  Copyright © 2019 The App Brewery. All rights reserved.
+//  Created by Ruwaiz Razak on 04/10/20.
+//  Copyright © 2020 The App Brewery. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
-class ViewController: UIViewController {
-    @IBOutlet weak var QuestionLabel: UILabel!
-    @IBOutlet weak var trueButton: UIButton!
-    @IBOutlet weak var falseButton: UIButton!
-    @IBOutlet weak var progressBar: UIProgressView!
-    
-    var questionNumber = 0
-    
+struct QuizBrain {
     let quiz = [
         Question(q: "A slug's blood is green.", a: "True"),
                 Question(q: "Approximately one quarter of human bones are in the feet.", a: "True"),
@@ -29,46 +22,40 @@ class ViewController: UIViewController {
                 Question(q: "The loudest sound produced by any animal is 188 decibels. That animal is the African Elephant.", a: "False"),
                 Question(q: "No piece of square dry paper can be folded in half more than 7 times.", a: "False"),
                 Question(q: "Chocolate affects a dog's heart and nervous system; a few ounces are enough to kill a small dog.", a: "True")
-
     ]
-    func updateUI() {
-        QuestionLabel.text = quiz[questionNumber].q
-        trueButton.backgroundColor = UIColor.clear
-        falseButton.backgroundColor = UIColor.clear
-        progressBar.progress = Float(questionNumber+1)/Float(quiz.count)
+    var questionNumber = 0
+    var score = 0
+    mutating func checkAnswer (_ userAnswer : String)  -> Bool/* While defining this method, we are using _ at the beginning to indicate that the external parameter is nil, and the internal parameter to userAnswer. We can either mention it as checkAnswer(userAnswer: String) to define userAnswer as both internal and external parameter, or checkAnswer(answer userAnswer: String) to use answer as external parameter and userAnswer as internal parameter, or checkAnswer(_ userAnswer: String) to mention no external parameter and userAnswer as internal parameter. */
+    {
+        if userAnswer == quiz[questionNumber].a{
+            score = score + 1
+            return true
+        }
+        else {
+            return false
+        }
     }
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        updateUI()
+    
+    func getQuestionText() -> String{
+        return quiz[questionNumber].q
     }
-
-    @IBAction func answerButtonPressed(_ sender: UIButton) {
-       
-            let userAnswer = sender.currentTitle
-            let actualAnswer = quiz[questionNumber].a
-            if userAnswer == actualAnswer {
-                sender.backgroundColor = UIColor.green
-            }
-            else{
-                sender.backgroundColor = UIColor.red
-            }
-            
+    
+    func getProgress() -> Float{
+        return Float(questionNumber+1)/Float(quiz.count)
+    }
+    
+    mutating func nextQuestion(){
         if questionNumber + 1 < quiz.count{
             questionNumber+=1
         }
         else{
             questionNumber = 0
+            score = 0
         }
-        
-        let secondsToDelay = 0.2
-        DispatchQueue.main.asyncAfter(deadline: .now() + secondsToDelay) {
-           print("This message is delayed")
-           // Put any code you want to be delayed here
-            self.updateUI()
-        }
-       
     }
     
-}
+    func getScore() -> Int{
+        return score
+    }
 
+}
