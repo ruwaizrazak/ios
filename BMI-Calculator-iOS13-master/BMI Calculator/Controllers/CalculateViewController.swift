@@ -8,15 +8,15 @@
 
 import UIKit
 
-class ViewController: UIViewController {
-
+class CalculateViewController: UIViewController {
+    var BMI = 0.0
     override func viewDidLoad() {
         super.viewDidLoad()
-        heightSlider.value = 0
+       /* heightSlider.value = 0
         weightSlider.value = 0
         CurrentHeight.text = "0m"
         currentWeight.text = "0kg"
-        
+        */
         // Do any additional setup after loading the view.
     }
     @IBOutlet weak var heightSlider: UISlider!
@@ -31,8 +31,20 @@ class ViewController: UIViewController {
     }
     
     @IBAction func calculateButton(_ sender: UIButton) {
-        var BMI = weightSlider.value/(pow(heightSlider.value,2))
-        print (BMI)
+        BMI = Double(weightSlider.value/(heightSlider.value*heightSlider.value))
+        self.performSegue(withIdentifier: "goToResult", sender: self)
+        print(BMI)
+    }
+    // MARK: - Navigation
+
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destination.
+        // Pass the selected object to the new view controller.
+        if segue.identifier == "goToResult" {
+            let destinationVC = segue.destination as! resultViewController
+            destinationVC.BMIValue = String(BMI)
+        }
     }
 }
 
